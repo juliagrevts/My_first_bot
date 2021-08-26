@@ -10,30 +10,32 @@ logging.basicConfig(filename='bot.log', level=logging.INFO)
 PROXY = {'proxy_url': settings.PROXY_URL,
     'urllib3_proxy_kwargs': {'username': settings.PROXY_USERNAME, 'password': settings.PROXY_PASSWORD}}
 
+planets_dict = {
+    'Mars': Mars(),
+    'Jupiter': Jupiter(), 
+    'Saturn': Saturn(), 
+    'Mercury': Mercury(), 
+    'Uranus': Uranus(), 
+    'Venus': Venus(), 
+    'Neptune': Neptune()
+}
+
 def greet_user(update, context):
     print('Вызван /start')
     update.message.reply_text('Привет, пользователь!')
 
 def name_constellation(update, context):
-    user_planet = update.message.text.split()
-    if len(user_planet) > 2:
+    user_input = update.message.text.split()
+    if len(user_input) > 2:
         update.message.reply_text('Нужно передать только одну планету')
     else:
-        get_planet = user_planet.pop().capitalize()
-        planets_list = [
-            Mars(), 
-            Jupiter(), 
-            Saturn(), 
-            Mercury(), 
-            Uranus(), 
-            Venus(), 
-            Neptune()
-        ]
-        for planet in planets_list:
-            if get_planet == planet.name:
-                planet.compute()
-                get_constellation = constellation(planet)
-                update.message.reply_text(f'Планета сейчас находится в созвездии {get_constellation}')
+        user_planet = user_input.pop().capitalize()
+        if user_planet in planets_dict:
+            get_planet = planets_dict[user_planet]
+            get_planet.compute()
+            get_constellation = constellation(get_planet)
+            update.message.reply_text(f'Планета сейчас находится в созвездии {get_constellation}')
+
           
 def talk_to_me(update, context):
     text = update.message.text
