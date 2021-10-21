@@ -72,8 +72,8 @@ def play_cities(update, context):
                     break
         if not found_city:
             update.message.reply_text(f'Не знаю городов на "{user_city[-1]}", вы выиграли!')
-        else:
-            update.message.reply_text('В списке у бота нет такого города')
+    else:
+        update.message.reply_text('В списке у бота нет такого города')
 
 
 def calculate(update, context):
