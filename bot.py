@@ -64,7 +64,7 @@ def play_cities(update, context):
                 CITIES_DICT[id].remove(city)
                 found_city = True
                 break
-            elif user_city[-1] == 'ь' or 'ы':
+            elif user_city[-1] == 'ь' or user_city[-1] == 'ы':
                 if user_city[-2].capitalize() == city[0]:
                     update.message.reply_text(f'{city}, ваш ход')
                     CITIES_DICT[id].remove(city)
