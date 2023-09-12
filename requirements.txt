@@ -1,15 +1,4 @@
-APScheduler==3.6.3
-cachetools==4.2.2
-certifi==2021.5.30
 ephem==4.0.0.2
-flake8==3.9.2
-mccabe==0.6.1
-pycodestyle==2.7.0
-pyflakes==2.3.1
-PySocks==1.7.1
 python-telegram-bot==13.7
-pytz==2021.1
-six==1.16.0
-tornado==6.1
-tzlocal==3.0
 emoji==2.8.0
+clarifai-grpc==9.8.0

@@ -4,6 +4,7 @@ from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 
 from handlers import (
     calculate,
+    check_user_photo,
     count_words,
     determine_full_moon,
     greet_user,
@@ -36,8 +37,9 @@ def main():
     dp.add_handler(CommandHandler('calc', calculate))
     dp.add_handler(CommandHandler('guess', guess_number))
 
+    dp.add_handler(MessageHandler(Filters.photo, check_user_photo))
     dp.add_handler(MessageHandler(Filters.location, user_location))
-    dp.add_handler(MessageHandler(Filters.regex('^Пришли слоника$'), send_elephant_picture))
+    dp.add_handler(MessageHandler(Filters.regex('^Пришли фото слоника$'), send_elephant_picture))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info('Бот стартовал')

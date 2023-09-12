@@ -1,10 +1,12 @@
 from glob import glob
+import os
 from random import choice
 
 import ephem
 
 from utils import (
     get_smile,
+    has_object_on_image,
     main_keyboard,
     play_random_numbers,
     precalculate,
@@ -125,7 +127,7 @@ def calculate(update, context):
 def talk_to_me(update, context):
     text = update.message.text
     smile = get_smile(context.user_data)
-    # take the first name of the current user
+    # Take the first name of the current user
     first_name = update.effective_user.first_name
     update.message.reply_text(
         f'Привет, {first_name}!{smile} Ты написал: {text}',
@@ -134,7 +136,7 @@ def talk_to_me(update, context):
 
 
 def guess_number(update, context):
-    if context.args:  # list of args the user passed after '/command '
+    if context.args:  # List of args the user passed after '/command '
         try:
             user_int = int(context.args[0])
             message = play_random_numbers(user_int)
@@ -142,17 +144,17 @@ def guess_number(update, context):
             message = 'Введите целое число'
     else:
         message = 'Введите число после команды /guess'
-    # reply to the chat that wrote to the bot
+    # Reply to the chat that wrote to the bot
     update.message.reply_text(message, reply_markup=main_keyboard())
 
 
 def send_elephant_picture(update, context):
     elephant_pics_list = glob('images/el*.jpg')
     elephant_pic_path = choice(elephant_pics_list)
-    # take the current chat id
+    # Take the current chat id
     chat_id = update.effective_chat.id
     context.bot.send_photo(
-        # when sending an image, you need to specify the chat_id explicitly
+        # When sending an image, you need to specify the chat_id explicitly
         chat_id=chat_id,
         photo=open(elephant_pic_path, 'rb'),
         reply_markup=main_keyboard()
@@ -166,3 +168,22 @@ def user_location(update, context):
         f'Ваши координаты {coords} {smile}',
         reply_markup=main_keyboard()
     )
+
+
+def check_user_photo(update, context):
+    update.message.reply_text('Обрабатываю фото')
+    # Create a new dir if it doesn't exist otherwise do nothing
+    os.makedirs('downloads', exist_ok=True)
+    # Take the biggest size file
+    user_photo = context.bot.getFile(update.message.photo[-1].file_id)
+    # Create a filename and download the file
+    file_name = os.path.join('downloads', f'{user_photo.file_id}.jpg')
+    user_photo.download(file_name)
+
+    if has_object_on_image(file_name, object_name='elephant'):
+        new_file_name = os.path.join('images', f'el_{user_photo.file_id}.jpg')
+        os.rename(file_name, new_file_name)
+        update.message.reply_text('На твоем фото есть слоник, сохранил его')
+    else:
+        os.remove(file_name)
+        update.message.reply_text('На этом фото слоник не найден')
